@@ -1,0 +1,37 @@
+{
+  "name": "@lazarus/backend",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch"
+  },
+  "dependencies": {
+    "@aws-sdk/client-apigatewaymanagementapi": "^3.540.0",
+    "@aws-sdk/client-apprunner": "^3.540.0",
+    "@aws-sdk/client-bedrock-runtime": "^3.540.0",
+    "@aws-sdk/client-cloudwatch-logs": "^3.540.0",
+    "@aws-sdk/client-codebuild": "^3.540.0",
+    "@aws-sdk/client-dynamodb": "^3.540.0",
+    "@aws-sdk/client-ecr": "^3.540.0",
+    "@aws-sdk/client-ecs": "^3.540.0",
+    "@aws-sdk/client-s3": "^3.540.0",
+    "@aws-sdk/client-secrets-manager": "^3.540.0",
+    "@aws-sdk/client-sfn": "^3.540.0",
+    "@aws-sdk/client-sns": "^3.996.0",
+    "@aws-sdk/client-sqs": "^3.540.0",
+    "@aws-sdk/client-xray": "^3.996.0",
+    "@aws-sdk/lib-dynamodb": "^3.540.0",
+    "@aws-sdk/s3-request-presigner": "^3.540.0",
+    "@aws-sdk/util-dynamodb": "^3.540.0",
+    "archiver": "^7.0.1",
+    "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "@types/archiver": "^6.0.2",
+    "@types/aws-lambda": "^8.10.136",
+    "@types/node": "^20.12.7",
+    "@types/uuid": "^9.0.8",
+    "typescript": "^5.4.5"
+  }
+}

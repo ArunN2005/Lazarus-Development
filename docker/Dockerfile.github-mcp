@@ -1,0 +1,24 @@
+FROM node:20-alpine
+
+WORKDIR /app
+
+# Install git
+RUN apk add --no-cache git
+
+# Copy source
+COPY backend/mcp-servers/github-mcp/index.ts ./index.ts
+COPY backend/mcp-servers/github-mcp/package.json ./package.json
+COPY backend/mcp-servers/github-mcp/tsconfig.json ./tsconfig.json
+
+# Install dependencies and build
+RUN npm install
+RUN npx tsc
+
+# The container expects these env vars:
+# REPO_URL - GitHub repository URL to clone
+# GITHUB_PAT - (optional) Personal Access Token for private repos
+# S3_BUCKET - S3 bucket to upload cloned files
+# S3_PREFIX - S3 key prefix for uploaded files
+# AWS_REGION - AWS region
+
+CMD ["node", "dist/index.js"]

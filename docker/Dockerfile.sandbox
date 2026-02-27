@@ -1,0 +1,31 @@
+FROM node:20-alpine
+
+WORKDIR /app
+
+# Install build tools for native modules
+RUN apk add --no-cache python3 make g++ curl
+
+# Copy sandbox runner source
+COPY backend/agents/sandbox/runner.ts ./runner.ts
+COPY backend/agents/sandbox/package.json ./package.json
+COPY backend/agents/sandbox/tsconfig.json ./tsconfig.json
+
+# Install dependencies and build runner
+RUN npm install
+RUN npx tsc
+
+# Install AWS CLI for S3 operations
+RUN apk add --no-cache aws-cli
+
+# The container expects these env vars:
+# PROJECT_ID - Project ID
+# S3_BUCKET - S3 bucket with generated code
+# S3_PREFIX - S3 key prefix for project files
+# AWS_REGION - AWS region
+# PORT - Port to run the app on (default: 3000)
+
+# Health check
+HEALTHCHECK --interval=10s --timeout=5s --start-period=30s --retries=3 \
+  CMD curl -f http://localhost:${PORT:-3000}/ || exit 1
+
+CMD ["node", "dist/runner.js"]

@@ -1,0 +1,28 @@
+{
+  "name": "lazarus-coder",
+  "version": "1.0.0",
+  "private": true,
+  "description": "AI-powered legacy code modernization platform",
+  "workspaces": [
+    "backend",
+    "infrastructure",
+    "frontend"
+  ],
+  "scripts": {
+    "build": "npm run build --workspaces",
+    "build:backend": "npm run build -w backend",
+    "build:infra": "npm run build -w infrastructure",
+    "build:frontend": "npm run build -w frontend",
+    "dev": "npm run dev -w frontend",
+    "deploy": "npm run deploy -w infrastructure",
+    "lint": "npm run lint --workspaces --if-present",
+    "clean": "rimraf **/dist **/node_modules/.cache **/.next"
+  },
+  "devDependencies": {
+    "rimraf": "^5.0.5",
+    "typescript": "^5.4.5"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}
