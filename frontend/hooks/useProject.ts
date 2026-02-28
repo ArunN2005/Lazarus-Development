@@ -89,7 +89,7 @@ export function useProject(projectId: string): UseProjectReturn {
     if (status === 'AWAITING_APPROVAL' || status === 'PLANNING') {
       refreshPlan();
     }
-    if (status === 'BUILDING' || status === 'TESTING' || status === 'DEPLOYING' || status === 'COMPLETED') {
+    if (status === 'BUILDING' || status === 'TESTING' || status === 'DEPLOYING' || status === 'COMPLETED' || status === 'FAILED') {
       refreshFiles();
       refreshCost();
     }

@@ -268,10 +268,17 @@ export default function ProjectDetailPage() {
                 <h3 className="text-sm font-medium text-gray-300 mb-3">Cost</h3>
                 <div className="text-2xl font-bold text-white mb-2">${cost.totalCost.toFixed(4)}</div>
                 <div className="space-y-1">
-                  {cost.breakdown.map((b) => (
-                    <div key={b.phase} className="flex items-center justify-between text-xs">
-                      <span className="text-gray-500 capitalize">{b.phase}</span>
-                      <span className="text-gray-400">${b.cost.toFixed(4)}</span>
+                  {([
+                    ['Sonnet',   cost.breakdown.bedrockSonnet],
+                    ['Haiku',    cost.breakdown.bedrockHaiku],
+                    ['CodeBuild',cost.breakdown.codebuild],
+                    ['ECS',      cost.breakdown.ecsFargate],
+                    ['AppRunner',cost.breakdown.appRunner],
+                    ['Other',    cost.breakdown.other],
+                  ] as [string, number][]).filter(([, v]) => v > 0).map(([label, v]) => (
+                    <div key={label} className="flex items-center justify-between text-xs">
+                      <span className="text-gray-500">{label}</span>
+                      <span className="text-gray-400">${v.toFixed(4)}</span>
                     </div>
                   ))}
                 </div>

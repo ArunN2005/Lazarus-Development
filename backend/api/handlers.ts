@@ -337,6 +337,24 @@ export async function provideEnvVars(event: APIEvent): Promise<APIResponse> {
 }
 
 // ============================================================================
+// Language detection helper
+// ============================================================================
+
+function detectLanguage(filePath: string): string {
+  const ext = filePath.split('.').pop()?.toLowerCase() ?? '';
+  const map: Record<string, string> = {
+    ts: 'typescript', tsx: 'typescript', js: 'javascript', jsx: 'javascript',
+    py: 'python', rs: 'rust', go: 'go', java: 'java', kt: 'kotlin',
+    rb: 'ruby', php: 'php', cs: 'csharp', cpp: 'cpp', c: 'c',
+    html: 'html', css: 'css', scss: 'scss', json: 'json', yaml: 'yaml',
+    yml: 'yaml', md: 'markdown', sh: 'shell', bash: 'shell',
+    toml: 'toml', sql: 'sql', dockerfile: 'dockerfile',
+  };
+  if (filePath.toLowerCase().endsWith('dockerfile')) return 'dockerfile';
+  return map[ext] ?? 'text';
+}
+
+// ============================================================================
 // GET /projects/:projectId/files — List generated files
 // ============================================================================
 
@@ -351,19 +369,26 @@ export async function listFiles(event: APIEvent): Promise<APIResponse> {
 
     const files = (await db.query(
       config.fileGenerationsTable,
-      'projectId = :pid',
+      'projectId',
       projectId
     )).items;
 
     return jsonResponse(200, {
-      files: files.map((f: Record<string, unknown>) => ({
-        targetPath: f.targetPath,
-        sourcePath: f.sourcePath,
-        action: f.action,
-        phase: f.phase,
-        sizeBytes: f.sizeBytes,
-        generatedAt: f.generatedAt,
-      })),
+      files: files.map((f: Record<string, unknown>) => {
+        const path = ((f.filePath ?? f.targetPath) as string) || '';
+        return {
+          filePath: path,
+          targetPath: f.targetPath,
+          sourcePath: f.sourcePath,
+          action: f.action,
+          phase: f.phase,
+          size: (f.sizeBytes as number) ?? 0,
+          sizeBytes: f.sizeBytes,
+          generatedAt: f.generatedAt,
+          status: 'generated',
+          language: detectLanguage(path),
+        };
+      }),
     });
   } catch (error) {
     return errorResponse('listFiles', error);
@@ -389,7 +414,7 @@ export async function getFileContent(event: APIEvent): Promise<APIResponse> {
       `${projectId}/generated/${filePath}`
     );
 
-    return jsonResponse(200, { filePath, content });
+    return jsonResponse(200, { filePath, content, language: detectLanguage(filePath) });
   } catch (error) {
     return errorResponse('getFileContent', error);
   }

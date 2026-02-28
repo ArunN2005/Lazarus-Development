@@ -156,12 +156,14 @@ export interface CostBreakdownData {
   projectId: string;
   totalCost: number;
   breakdown: {
-    phase: string;
-    inputTokens: number;
-    outputTokens: number;
-    cost: number;
-    model: string;
-  }[];
+    total: number;
+    bedrockSonnet: number;
+    bedrockHaiku: number;
+    codebuild: number;
+    ecsFargate: number;
+    appRunner: number;
+    other: number;
+  };
 }
 
 export interface EnvVar {
@@ -211,7 +213,7 @@ export const api = {
 
   getFileContent: (projectId: string, filePath: string, token?: string) =>
     request<{ content: string; language: string }>(
-      `/projects/${projectId}/files/${encodeURIComponent(filePath)}`,
+      `/projects/${projectId}/file?path=${encodeURIComponent(filePath)}`,
       { token }
     ),
 
@@ -222,8 +224,8 @@ export const api = {
     token?: string
   ) =>
     request<{ message: string }>(
-      `/projects/${projectId}/files/${encodeURIComponent(filePath)}`,
-      { method: 'PUT', body: { content }, token }
+      `/projects/${projectId}/file`,
+      { method: 'PUT', body: { filePath, content }, token }
     ),
 
   // Cost

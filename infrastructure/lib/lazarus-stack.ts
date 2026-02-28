@@ -611,6 +611,14 @@ export class LazarusStack extends cdk.Stack {
       })
     );
 
+    // Allow Lambda to create the App Runner service-linked role on first use
+    lambdaRole.addToPolicy(
+      new iam.PolicyStatement({
+        actions: ['iam:CreateServiceLinkedRole', 'iam:PassRole'],
+        resources: ['*'],
+      })
+    );
+
     lambdaRole.addToPolicy(
       new iam.PolicyStatement({
         actions: [
